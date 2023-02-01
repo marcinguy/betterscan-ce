@@ -12,7 +12,8 @@ WORKDIR /srv/scanmycode
 RUN git pull
 WORKDIR /srv/scanmycode
 #RUN pip install -r requirements.txt
-RUN pipenv install --python=/usr/bin/python3.9
+#RUN pipenv install --python=/usr/bin/python3.9
+RUN python3 -m pipenv install --python=/usr/bin/python3.9 --system
 #RUN pip install pylint===1.9.2
 #RUN pip install stripe
 WORKDIR /

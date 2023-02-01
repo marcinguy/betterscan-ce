@@ -13,10 +13,11 @@ WORKDIR /srv/scanmycode
 RUN git pull
 WORKDIR /srv/scanmycode
 #RUN pip install -r requirements.txt
-RUN pipenv install --python=/usr/bin/python3.9 
+#RUN pipenv install --python=/usr/bin/python3.9 
+RUN python3 -m pipenv install --python=/usr/bin/python3.9 --system
 #RUN pip install pylint===1.9.2
 #RUN pip install stripe
-RUN pip install Rich
+RUN python3.9 -m pip install Rich
 WORKDIR /
 RUN git clone -b checkmate3-cli https://github.com/marcinguy/checkmate-ce /checkmate
 WORKDIR /checkmate
@@ -30,7 +31,7 @@ WORKDIR /
 #RUN git pull
 #RUN python3 setup.py install
 WORKDIR /
-RUN pip install psycopg2 --upgrade
+RUN python3.9 -m pip install psycopg2 --upgrade
 RUN ln -s /srv/scanmycode/quantifiedcode/settings/default.yml /srv/scanmycode/settings.yml
 WORKDIR /root
 #RUN wget https://golang.org/dl/go1.17.6.linux-amd64.tar.gz
@@ -53,7 +54,7 @@ RUN npm install -g jshint
 WORKDIR /root
 RUN git clone https://gitlab.com/marcinguy/trufflehog3-oss.git
 RUN cd trufflehog3-oss && python3.9 setup.py install
-RUN pip3 install markupsafe==2.0.1
+RUN python3.9 -m pip install markupsafe==2.0.1
 WORKDIR /srv/scanmycode
 RUN mkdir /root/confused/
 RUN git clone https://gitlab.com/marcinguy/confused-oss.git /root/confused
@@ -86,7 +87,7 @@ RUN tar -xzf insider_3.0.0_linux_x86_64.tar.gz
 WORKDIR /root
 RUN git clone https://github.com/marcinguy/graudit-ce graudit
 RUN git clone https://github.com/marcinguy/text4shell-ce text4shell-ce
-RUN pip install yara-scanner
+RUN python3.9 -m pip install yara-scanner
 RUN mkdir /root/yara
 RUN cp -pr /srv/scanmycode/analyzers/yara/* /root/yara
 ADD https://nixos.org/nix/install /tmp

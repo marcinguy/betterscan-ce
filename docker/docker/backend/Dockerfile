@@ -13,7 +13,8 @@ RUN git pull
 RUN apt update && apt install -y libcurl4-nss-dev libssl-dev tree sudo git ssh rsync npm ruby-sass pipenv
 RUN tree
 #RUN pip install -r requirements.txt
-RUN pipenv install --python=/usr/bin/python3.9
+#RUN pipenv install --python=/usr/bin/python3.9
+RUN python3 -m pipenv install --python=/usr/bin/python3.9 --system
 RUN python3.9 -m pip install pylint===1.9.2
 RUN python3.9 -m pip install stripe
 WORKDIR /
