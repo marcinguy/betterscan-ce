@@ -1,13 +1,17 @@
-FROM python:3.7
+ARG DEBIAN_FRONTEND=noninteractive
+FROM ubuntu:20.04
+RUN ln -snf /usr/share/zoneinfo/$CONTAINER_TIMEZONE /etc/localtime && echo $CONTAINER_TIMEZONE > /etc/timezone
+RUN apt update && apt install -y libcurl4-nss-dev libssl-dev tree git sudo ssh rubygems python3-pip python3.9 python3.9-dev npm php default-jdk pipenv rsync jo libpq-dev curl
 WORKDIR /
 RUN mkdir -p /srv
-RUN git clone https://github.com/marcinguy/scanmycode-ce.git /srv/scanmycode
+RUN apt update && apt install -y git
+RUN git clone -b python_3_9 https://github.com/marcinguy/scanmycode-ce.git /srv/scanmycode
 WORKDIR /srv/scanmycode
 RUN git pull
 RUN apt update && apt install -y libcurl4-nss-dev libssl-dev tree sudo git ssh rsync npm ruby-sass pipenv
 RUN tree
 #RUN pip install -r requirements.txt
-RUN pipenv install --system
+RUN pipenv install --python=/usr/bin/python3.9
 RUN pip3 install pylint===1.9.2
 RUN pip3 install stripe
 WORKDIR /

@@ -3,7 +3,7 @@
 ARG DEBIAN_FRONTEND=noninteractive
 FROM ubuntu:20.04
 RUN ln -snf /usr/share/zoneinfo/$CONTAINER_TIMEZONE /etc/localtime && echo $CONTAINER_TIMEZONE > /etc/timezone
-RUN apt update && apt install -y libcurl4-nss-dev libssl-dev tree git sudo ssh rubygems python3-pip python3.9 npm php default-jdk pipenv rsync jo
+RUN apt update && apt install -y libcurl4-nss-dev libssl-dev tree git sudo ssh rubygems python3-pip python3.9 python3.9-dev npm php default-jdk pipenv rsync jo libpq-dev
 WORKDIR /
 RUN mkdir -p /srv
 RUN git clone -b python_3_9 https://github.com/marcinguy/scanmycode-ce.git /srv/scanmycode
@@ -11,7 +11,7 @@ WORKDIR /srv/scanmycode
 RUN git pull
 WORKDIR /srv/scanmycode
 #RUN pip install -r requirements.txt
-RUN pipenv install --python=/usr/bin/python3.9
+RUN pipenv install --python=/usr/bin/python3.9 
 #RUN pip install pylint===1.9.2
 #RUN pip install stripe
 RUN pip install Rich
@@ -34,6 +34,7 @@ WORKDIR /root
 #RUN wget https://golang.org/dl/go1.17.6.linux-amd64.tar.gz
 #RUN sudo tar -C /usr/local -xzf go1.17.6.linux-amd64.tar.gz
 ENV SHELL /bin/bash
+RUN apt install -y curl
 RUN curl -LO https://get.golang.org/$(uname)/go_installer
 RUN chmod +x go_installer
 RUN ./go_installer
@@ -70,9 +71,9 @@ RUN cp /srv/scanmycode/analyzers/progpilot_dev20180720-215434.phar /root/phpscan
 RUN cp /srv/scanmycode/analyzers/find_unicode_control2.py /usr/local/bin/
 RUN cp -pr /srv/scanmycode/analyzers/custom-semgrep /root
 RUN cp /srv/scanmycode/analyzers/*.yml /root/
-RUN cp /srv/scanmycode/sshfeature/ssh /usr/local/lib/python3.9/site-packages/checkmate-0.2.0-py3.7.egg/checkmate/contrib/plugins/git/lib
-RUN mkdir -p /usr/local/lib/python3.9/site-packages/checkmate-0.2.0-py3.7.egg/checkmate/contrib/plugins/javascript/jshint/js
-RUN cp /srv/scanmycode/analyzers/json_reporter.js /usr/local/lib/python3.9/site-packages/checkmate-0.2.0-py3.7.egg/checkmate/contrib/plugins/javascript/jshint/js/
+RUN cp /srv/scanmycode/sshfeature/ssh /usr/local/lib/python3.9/dist-packages/checkmate-0.2.0-py3.9.egg/checkmate/contrib/plugins/git/lib
+RUN mkdir -p /usr/local/lib/python3.9/dist-packages/checkmate-0.2.0-py3.9.egg/checkmate/contrib/plugins/javascript/jshint/js
+RUN cp /srv/scanmycode/analyzers/json_reporter.js /usr/local/lib/python3.9/dist-packages/checkmate-0.2.0-py3.9.egg/checkmate/contrib/plugins/javascript/jshint/js/
 RUN pip3 install email_validator
 #RUN pip3 install celery==4.4.6
 RUN pip3 install testresources
