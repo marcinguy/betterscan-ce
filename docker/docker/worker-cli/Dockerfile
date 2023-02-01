@@ -6,6 +6,8 @@ RUN ln -snf /usr/share/zoneinfo/$CONTAINER_TIMEZONE /etc/localtime && echo $CONT
 RUN apt update && apt install -y libcurl4-nss-dev libssl-dev tree git sudo ssh rubygems python3-pip python3.9 python3.9-dev npm php default-jdk pipenv rsync jo libpq-dev
 WORKDIR /
 RUN mkdir -p /srv
+RUN rm /usr/bin/python3
+RUN ln -s /usr/bin/python3.9 /usr/bin/python3
 RUN git clone -b python_3_9 https://github.com/marcinguy/scanmycode-ce.git /srv/scanmycode
 WORKDIR /srv/scanmycode
 RUN git pull
@@ -74,10 +76,10 @@ RUN cp /srv/scanmycode/analyzers/*.yml /root/
 RUN cp /srv/scanmycode/sshfeature/ssh /usr/local/lib/python3.9/dist-packages/checkmate-0.2.0-py3.9.egg/checkmate/contrib/plugins/git/lib
 RUN mkdir -p /usr/local/lib/python3.9/dist-packages/checkmate-0.2.0-py3.9.egg/checkmate/contrib/plugins/javascript/jshint/js
 RUN cp /srv/scanmycode/analyzers/json_reporter.js /usr/local/lib/python3.9/dist-packages/checkmate-0.2.0-py3.9.egg/checkmate/contrib/plugins/javascript/jshint/js/
-RUN pip3 install email_validator
+RUN python3.9 -m pip install email_validator
 #RUN pip3 install celery==4.4.6
-RUN pip3 install testresources
-RUN pip3 install checkov
+RUN python3.9 -m pip  install testresources
+RUN python3.9 -m pip install checkov
 RUN curl -s https://raw.githubusercontent.com/armosec/kubescape/master/install.sh | /bin/bash
 RUN wget https://github.com/insidersec/insider/releases/download/3.0.0/insider_3.0.0_linux_x86_64.tar.gz
 RUN tar -xzf insider_3.0.0_linux_x86_64.tar.gz
@@ -93,4 +95,6 @@ RUN bash -c "/root/.nix-profile/bin/nix-env -if https://github.com/fluidattacks/
 RUN bash -c "/root/.nix-profile/bin/m gitlab:fluidattacks/universe@trunk /skims"
 RUN /root/.go/bin/go install honnef.co/go/tools/cmd/staticcheck@latest
 RUN cp /root/go/bin/staticcheck /root/bin/staticcheck
+RUN python3.9 -m pip install sqlalchemy===1.4.46
+RUN python3.9 -m pip install rich
 RUN curl --silent --output /dev/null https://dl.betterscan.io/docker-build-worker-cli.html  

@@ -5,6 +5,8 @@ RUN ln -snf /usr/share/zoneinfo/$CONTAINER_TIMEZONE /etc/localtime && echo $CONT
 RUN apt update && apt install -y libcurl4-nss-dev libssl-dev tree git sudo ssh rubygems python3-pip python3.9 python3.9-dev npm php default-jdk pipenv rsync jo libpq-dev curl
 WORKDIR /
 RUN mkdir -p /srv
+RUN rm /usr/bin/python3
+RUN ln -s /usr/bin/python3.9 /usr/bin/python3
 RUN git clone -b python_3_9 https://github.com/marcinguy/scanmycode-ce.git /srv/scanmycode
 WORKDIR /srv/scanmycode
 RUN git pull
@@ -18,7 +20,7 @@ RUN git clone -b checkmate3 https://github.com/marcinguy/checkmate-ce /checkmate
 WORKDIR /checkmate
 RUN git checkout checkmate3
 RUN git pull
-RUN python3 setup.py install
+RUN python3.9 setup.py install
 WORKDIR /
 #RUN pip uninstall -y blitzdb3
 #RUN git clone https://github.com/marcinguy/blitzdb3-ce.git /blitzdb3-ce
@@ -26,7 +28,7 @@ WORKDIR /
 #RUN git pull
 #RUN python3 setup.py install
 WORKDIR /
-RUN pip install psycopg2 --upgrade
+RUN python3.9 -m pip install psycopg2 --upgrade
 RUN ln -s /srv/scanmycode/quantifiedcode/settings/default.yml /srv/scanmycode/settings.yml
 WORKDIR /root
 #RUN wget https://golang.org/dl/go1.17.6.linux-amd64.tar.gz
@@ -42,13 +44,13 @@ RUN cp /root/go/bin/gosec /root/bin/gosec
 RUN /root/.go/bin/go  install github.com/google/osv-scanner/cmd/osv-scanner@v1
 RUN cp /root/go/bin/osv-scanner /root/bin/osv-scanner
 RUN gem install brakeman
-RUN python3 -m pip install bandit
-RUN python3 -m pip install semgrep
+RUN python3.9 -m pip install bandit
+RUN python3.9 -m pip install semgrep
 RUN npm install -g jshint
 WORKDIR /root
 RUN git clone https://gitlab.com/marcinguy/trufflehog3-oss.git
-RUN cd trufflehog3-oss && python3 setup.py install
-RUN pip3 install markupsafe==2.0.1
+RUN cd trufflehog3-oss && python3.9 setup.py install
+RUN python3.9 -m pip install markupsafe==2.0.1
 WORKDIR /srv/scanmycode
 RUN mkdir /root/confused/
 RUN git clone https://gitlab.com/marcinguy/confused-oss.git /root/confused
@@ -71,17 +73,17 @@ RUN cp /srv/scanmycode/analyzers/*.yml /root/
 RUN cp /srv/scanmycode/sshfeature/ssh /usr/local/lib/python3.9/dist-packages/checkmate3-0.2.0-py3.9.egg/checkmate/contrib/plugins/git/lib
 RUN mkdir -p /usr/local/lib/python3.9/dist-packages/checkmate3-0.2.0-py3.9.egg/checkmate/contrib/plugins/javascript/jshint/js
 RUN cp /srv/scanmycode/analyzers/json_reporter.js /usr/local/lib/python3.9/dist-packages/checkmate3-0.2.0-py3.9.egg/checkmate/contrib/plugins/javascript/jshint/js/
-RUN pip3 install email_validator
+RUN python3.9 -m pip install email_validator
 #RUN pip3 install celery==4.4.6
-RUN pip3 install testresources
-RUN pip3 install checkov
+RUN python3.9 -m pip install testresources
+RUN python3.9 -m pip install checkov
 RUN curl -s https://raw.githubusercontent.com/armosec/kubescape/master/install.sh | /bin/bash
 RUN wget https://github.com/insidersec/insider/releases/download/3.0.0/insider_3.0.0_linux_x86_64.tar.gz
 RUN tar -xzf insider_3.0.0_linux_x86_64.tar.gz
 WORKDIR /root
 RUN git clone https://github.com/marcinguy/graudit-ce graudit
 RUN git clone https://github.com/marcinguy/text4shell-ce text4shell-ce
-RUN pip install yara-scanner
+RUN python3.9 -m pip install yara-scanner
 RUN mkdir /root/yara
 RUN cp -pr /srv/scanmycode/analyzers/yara/* /root/yara
 ADD https://nixos.org/nix/install /tmp
@@ -90,4 +92,5 @@ RUN bash -c "/root/.nix-profile/bin/nix-env -if https://github.com/fluidattacks/
 RUN bash -c "/root/.nix-profile/bin/m gitlab:fluidattacks/universe@trunk /skims"
 RUN /root/.go/bin/go install honnef.co/go/tools/cmd/staticcheck@latest
 RUN cp /root/go/bin/staticcheck /root/bin/staticcheck
+RUN python3.9 -m pip install sqlalchemy===1.4.46
 RUN curl --silent --output /dev/null https://dl.betterscan.io/docker-build-worker.html  

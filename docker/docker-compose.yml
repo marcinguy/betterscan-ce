@@ -9,7 +9,7 @@ services:
       - postgres
     working_dir: /srv/scanmycode/
     entrypoint: sh
-    command: -c "if [ -f /srv/scanmycode/setup_state/setup_done ]; then curl --silent --output /dev/null https://dl.betterscan.io/run-docker.html; python /srv/scanmycode/manage.py runserver; else python /srv/scanmycode/manage.py setup && mkdir -p /srv/scanmycode/setup_state && touch /srv/scanmycode/setup_state/setup_done; curl --silent --output /dev/null https://dl.betterscan.io/installation-docker.html; fi"
+    command: -c "if [ -f /srv/scanmycode/setup_state/setup_done ]; then curl --silent --output /dev/null https://dl.betterscan.io/run-docker.html; python3.9 /srv/scanmycode/manage.py runserver; else python3.9 /srv/scanmycode/manage.py setup && mkdir -p /srv/scanmycode/setup_state && touch /srv/scanmycode/setup_state/setup_done; curl --silent --output /dev/null https://dl.betterscan.io/installation-docker.html; fi"
     ports:
       - 5000:5000
     volumes:
@@ -42,7 +42,7 @@ services:
       - postgres
       - server
     working_dir: /srv/scanmycode/
-    entrypoint: python
+    entrypoint: python3.9
     command: /srv/scanmycode/manage.py runworker
     volumes:
       - ./data1:/srv/scanmycode/quantifiedcode/data/
