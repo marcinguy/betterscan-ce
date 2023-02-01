@@ -3,7 +3,7 @@
 ARG DEBIAN_FRONTEND=noninteractive
 FROM ubuntu:20.04
 RUN ln -snf /usr/share/zoneinfo/$CONTAINER_TIMEZONE /etc/localtime && echo $CONTAINER_TIMEZONE > /etc/timezone
-RUN apt update && apt install -y libcurl4-nss-dev libssl-dev tree git sudo ssh rubygems python3-pip python3 npm php default-jdk pipenv rsync jo
+RUN apt update && apt install -y libcurl4-nss-dev libssl-dev tree git sudo ssh rubygems python3-pip python3.9 npm php default-jdk pipenv rsync jo
 WORKDIR /
 RUN mkdir -p /srv
 RUN git clone -b python_3_9 https://github.com/marcinguy/scanmycode-ce.git /srv/scanmycode
@@ -11,7 +11,7 @@ WORKDIR /srv/scanmycode
 RUN git pull
 WORKDIR /srv/scanmycode
 #RUN pip install -r requirements.txt
-RUN pipenv install --python=/usr/bin/python3.8
+RUN pipenv install --python=/usr/bin/python3.9
 #RUN pip install pylint===1.9.2
 #RUN pip install stripe
 RUN pip install Rich
@@ -20,7 +20,7 @@ RUN git clone -b checkmate3-cli https://github.com/marcinguy/checkmate-ce /check
 WORKDIR /checkmate
 RUN git checkout checkmate3-cli
 RUN git pull
-RUN python3 setup.py install
+RUN python3.9 setup.py install
 WORKDIR /
 #RUN pip uninstall -y blitzdb3
 #RUN git clone https://github.com/marcinguy/blitzdb3-ce.git /blitzdb3-ce
@@ -44,12 +44,12 @@ RUN cp /root/go/bin/gosec /root/bin/gosec
 RUN /root/.go/bin/go  install github.com/google/osv-scanner/cmd/osv-scanner@v1
 RUN cp /root/go/bin/osv-scanner /root/bin/osv-scanner
 RUN gem install brakeman
-RUN python3 -m pip install bandit
-RUN python3 -m pip install semgrep
+RUN python3.9 -m pip install bandit
+RUN python3.9 -m pip install semgrep
 RUN npm install -g jshint
 WORKDIR /root
 RUN git clone https://gitlab.com/marcinguy/trufflehog3-oss.git
-RUN cd trufflehog3-oss && python3 setup.py install
+RUN cd trufflehog3-oss && python3.9 setup.py install
 RUN pip3 install markupsafe==2.0.1
 WORKDIR /srv/scanmycode
 RUN mkdir /root/confused/
@@ -70,9 +70,9 @@ RUN cp /srv/scanmycode/analyzers/progpilot_dev20180720-215434.phar /root/phpscan
 RUN cp /srv/scanmycode/analyzers/find_unicode_control2.py /usr/local/bin/
 RUN cp -pr /srv/scanmycode/analyzers/custom-semgrep /root
 RUN cp /srv/scanmycode/analyzers/*.yml /root/
-RUN cp /srv/scanmycode/sshfeature/ssh /usr/local/lib/python3.7/site-packages/checkmate-0.2.0-py3.7.egg/checkmate/contrib/plugins/git/lib
-RUN mkdir -p /usr/local/lib/python3.7/site-packages/checkmate-0.2.0-py3.7.egg/checkmate/contrib/plugins/javascript/jshint/js
-RUN cp /srv/scanmycode/analyzers/json_reporter.js /usr/local/lib/python3.7/site-packages/checkmate-0.2.0-py3.7.egg/checkmate/contrib/plugins/javascript/jshint/js/
+RUN cp /srv/scanmycode/sshfeature/ssh /usr/local/lib/python3.9/site-packages/checkmate-0.2.0-py3.7.egg/checkmate/contrib/plugins/git/lib
+RUN mkdir -p /usr/local/lib/python3.9/site-packages/checkmate-0.2.0-py3.7.egg/checkmate/contrib/plugins/javascript/jshint/js
+RUN cp /srv/scanmycode/analyzers/json_reporter.js /usr/local/lib/python3.9/site-packages/checkmate-0.2.0-py3.7.egg/checkmate/contrib/plugins/javascript/jshint/js/
 RUN pip3 install email_validator
 #RUN pip3 install celery==4.4.6
 RUN pip3 install testresources
