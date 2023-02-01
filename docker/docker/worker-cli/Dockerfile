@@ -1,6 +1,9 @@
 #FROM python:3.7
-FROM debian:11
-RUN apt update && apt install -y libcurl4-nss-dev libssl-dev tree git sudo ssh rubygems python3-pip npm php default-jdk pipenv rsync jo
+#FROM debian:11
+ARG DEBIAN_FRONTEND=noninteractive
+FROM ubuntu:20.04
+RUN ln -snf /usr/share/zoneinfo/$CONTAINER_TIMEZONE /etc/localtime && echo $CONTAINER_TIMEZONE > /etc/timezone
+RUN apt update && apt install -y libcurl4-nss-dev libssl-dev tree git sudo ssh rubygems python3-pip python3 npm php default-jdk pipenv rsync jo
 WORKDIR /
 RUN mkdir -p /srv
 RUN git clone -b python_3_9 https://github.com/marcinguy/scanmycode-ce.git /srv/scanmycode
@@ -8,7 +11,7 @@ WORKDIR /srv/scanmycode
 RUN git pull
 WORKDIR /srv/scanmycode
 #RUN pip install -r requirements.txt
-RUN pipenv install --system
+RUN pipenv install --python=/usr/bin/python3.9
 #RUN pip install pylint===1.9.2
 #RUN pip install stripe
 RUN pip install Rich
