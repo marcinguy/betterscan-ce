@@ -1,9 +1,9 @@
 #FROM python:3.7
 #FROM debian:11
 ARG DEBIAN_FRONTEND=noninteractive
-FROM ubuntu:20.04
+FROM debian:11
 RUN ln -snf /usr/share/zoneinfo/$CONTAINER_TIMEZONE /etc/localtime && echo $CONTAINER_TIMEZONE > /etc/timezone
-RUN apt update && apt install -y libcurl4-nss-dev libssl-dev tree git sudo ssh rubygems python3-pip python3.9 python3.9-dev npm php default-jdk pipenv rsync jo libpq-dev
+RUN apt update && apt install -y libcurl4-nss-dev libssl-dev tree git sudo ssh rubygems python3-pip python3.9 python3.9-dev npm php default-jdk pipenv rsync jo libpq-dev curl wget
 WORKDIR /
 RUN mkdir -p /srv
 RUN rm /usr/bin/python3
@@ -34,18 +34,18 @@ WORKDIR /
 RUN python3.9 -m pip install psycopg2 --upgrade
 RUN ln -s /srv/scanmycode/quantifiedcode/settings/default.yml /srv/scanmycode/settings.yml
 WORKDIR /root
-#RUN wget https://golang.org/dl/go1.17.6.linux-amd64.tar.gz
-#RUN sudo tar -C /usr/local -xzf go1.17.6.linux-amd64.tar.gz
+RUN wget https://golang.org/dl/go1.18.linux-amd64.tar.gz
+RUN sudo tar -C /usr/local -xzf go1.18.linux-amd64.tar.gz
 ENV SHELL /bin/bash
-RUN apt install -y curl
-RUN curl -LO https://get.golang.org/$(uname)/go_installer
-RUN chmod +x go_installer
-RUN ./go_installer
-RUN rm go_installer
-RUN /root/.go/bin/go install github.com/securego/gosec/v2/cmd/gosec@latest
+#RUN apt install -y curl
+#RUN curl -LO https://get.golang.org/$(uname)/go_installer
+#RUN chmod +x go_installer
+#RUN ./go_installer
+#RUN rm go_installer
+RUN /usr/local/go/bin/go install github.com/securego/gosec/v2/cmd/gosec@latest
 RUN mkdir /root/bin
 RUN cp /root/go/bin/gosec /root/bin/gosec
-RUN /root/.go/bin/go  install github.com/google/osv-scanner/cmd/osv-scanner@v1
+RUN /usr/local/go/bin/go  install github.com/google/osv-scanner/cmd/osv-scanner@v1
 RUN cp /root/go/bin/osv-scanner /root/bin/osv-scanner
 RUN gem install brakeman
 RUN python3.9 -m pip install bandit
@@ -60,8 +60,8 @@ RUN mkdir /root/confused/
 RUN git clone https://gitlab.com/marcinguy/confused-oss.git /root/confused
 RUN tree
 WORKDIR /root/confused
-RUN /root/.go/bin/go mod init confused
-RUN /root/.go/bin/go build confused
+RUN /usr/local/go/bin/go mod init confused
+RUN /usr/local/go/bin/go build confused
 RUN tree
 #RUN cp /srv/scanmycode/analyzers/confused /root/confused/ #source https://gitlab.com/marcinguy/confused-oss
 WORKDIR /root
@@ -94,7 +94,7 @@ ADD https://nixos.org/nix/install /tmp
 RUN bash -c "bash /tmp/install --daemon"
 RUN bash -c "/root/.nix-profile/bin/nix-env -if https://github.com/fluidattacks/makes/archive/22.11.tar.gz"
 RUN bash -c "/root/.nix-profile/bin/m gitlab:fluidattacks/universe@trunk /skims"
-RUN /root/.go/bin/go install honnef.co/go/tools/cmd/staticcheck@latest
+RUN /usr/local/go/bin/go install honnef.co/go/tools/cmd/staticcheck@latest
 RUN cp /root/go/bin/staticcheck /root/bin/staticcheck
 RUN python3.9 -m pip install sqlalchemy===1.4.46
 RUN python3.9 -m pip install rich

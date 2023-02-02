@@ -1,5 +1,6 @@
 ARG DEBIAN_FRONTEND=noninteractive
-FROM ubuntu:20.04
+#FROM ubuntu:20.04
+FROM debian:11
 RUN ln -snf /usr/share/zoneinfo/$CONTAINER_TIMEZONE /etc/localtime && echo $CONTAINER_TIMEZONE > /etc/timezone
 RUN apt update && apt install -y libcurl4-nss-dev libssl-dev tree git sudo ssh rubygems python3-pip python3.9 python3.9-dev npm php default-jdk pipenv rsync jo libpq-dev curl
 WORKDIR /
